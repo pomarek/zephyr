@@ -59,3 +59,11 @@ static inline int z_vrfy_output_cmp_update_compare(struct device *dev,
 
 }
 #include <syscalls/output_cmp_update_compare_mrsh.c>
+
+static inline u32_t output_cmp_get_counter(struct device *dev)
+{
+	Z_OOPS(Z_SYSCALL_DRIVER_OUTPUT_CMP(dev, get_counter));
+	return z_impl_output_cmp_get_counter((struct device *)dev);
+
+}
+#include <syscalls/output_cmp_get_counter_mrsh.c>

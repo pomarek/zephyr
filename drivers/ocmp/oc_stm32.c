@@ -187,6 +187,10 @@ static int oc_stm32_update_compare(struct device *dev, u8_t channel,
 	return 0;
 }
 
+static u32_t oc_stm32_get_counter(struct device *dev)
+{
+	return TIM_STRUCT(dev)->CNT;
+}
 // static int rtc_stm32_set_alarm(struct device *dev,
 // 				const struct counter_alarm_cfg *alarm_cfg)
 // {
@@ -205,27 +209,7 @@ static int oc_stm32_update_compare(struct device *dev, u8_t channel,
 
 void oc_stm32_isr(void *arg)
 {
-	// struct device *const dev = (struct device *)arg;
-	// struct rtc_stm32_data *data = DEV_DATA(dev);
-	// counter_alarm_callback_t alarm_callback = data->callback;
 
-	// u32_t now = rtc_stm32_read(dev);
-
-	// if (LL_RTC_IsActiveFlag_ALRA(RTC) != 0) {
-
-	// 	LL_RTC_DisableWriteProtection(RTC);
-	// 	LL_RTC_ClearFlag_ALRA(RTC);
-	// 	LL_RTC_DisableIT_ALRA(RTC);
-	// 	LL_RTC_ALMA_Disable(RTC);
-	// 	LL_RTC_EnableWriteProtection(RTC);
-
-	// 	if (alarm_callback != NULL) {
-	// 		data->callback = NULL;
-	// 		alarm_callback(dev, 0, now, data->user_data);
-	// 	}
-	// }
-
-	// LL_EXTI_ClearFlag_0_31(RTC_EXTI_LINE);
 }
 
 static inline void __oc_stm32_get_clock(struct device *dev)
@@ -252,14 +236,14 @@ static int oc_stm32_init(struct device *dev)
 	}
 
 	return 0;
-	return 0;
 }
 
 static const struct output_cmp_driver_api api = {
 	.start = oc_stm32_start,
 	.stop = oc_stm32_stop,
 	.set_cmp = oc_stm32_set_compare,
-	.update_cmp = oc_stm32_update_compare
+	.update_cmp = oc_stm32_update_compare,
+	.get_counter = oc_stm32_get_counter,
 };
 
 

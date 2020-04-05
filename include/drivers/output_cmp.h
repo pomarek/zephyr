@@ -50,10 +50,12 @@ typedef int (*oc_api_set_compare)(struct device *dev, u8_t channel,
 				  const struct counter_cfg *match_cfg);
 typedef int (*oc_api_update_compare)(struct device *dev, u8_t channel,
 				     u32_t match);
+typedef u32_t (*oc_api_get_counter)(struct device *dev);
 
 __subsystem struct output_cmp_driver_api {
 	oc_api_start start;
 	oc_api_stop stop;
+	oc_api_get_counter get_counter;
 	oc_api_set_compare set_cmp;
 	oc_api_update_compare update_cmp;
 };
@@ -79,6 +81,16 @@ static inline int z_impl_output_cmp_stop(struct device *dev)
 			(struct output_cmp_driver_api *)dev->driver_api;
 
 	return api->stop(dev);
+}
+
+__syscall u32_t output_cmp_get_counter(struct device *dev);
+
+static inline u32_t z_impl_output_cmp_get_counter(struct device *dev)
+{
+	const struct output_cmp_driver_api *api =
+			(struct output_cmp_driver_api *)dev->driver_api;
+
+	return api->get_counter(dev);
 }
 
 __syscall int output_cmp_set_compare(struct device *dev, u8_t channel,
