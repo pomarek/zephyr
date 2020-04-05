@@ -43,9 +43,9 @@
 #include <stm32f1xx_ll_system.h>
 #endif /* CONFIG_CLOCK_CONTROL_STM32_CUBE */
 
-#ifdef CONFIG_USE_STM32_LL_TIM
+#ifdef CONFIG_OC_STM32
 #include <stm32f1xx_ll_tim.h>
-#endif /* CONFIG_USE_STM32_LL_TIM */
+#endif /* CONFIG_OC_STM32 */
 
 #ifdef CONFIG_I2C_STM32
 #include <stm32f1xx_ll_i2c.h>

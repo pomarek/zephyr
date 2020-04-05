@@ -7,7 +7,7 @@ properties:
     label:
       required: true
 
-    "#oc-cells":
-      type: int
-      required: true
-      description: Number of items to expect in a oc specifier
+    # "#oc-cells":
+    #   type: int
+    #   required: true
+    #   description: Number of items to expect in a oc specifier

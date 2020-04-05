@@ -12,11 +12,3 @@ properties:
       type: int
       required: true
       description: Clock prescaler at the input of the timer
-
-    "#oc-cells":
-      const: 2
-
-oc-cells:
-  - channel
-# period in terms of nanoseconds
-  - period

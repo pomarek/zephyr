@@ -45,6 +45,10 @@ config PWM_STM32
 	default y
 	depends on PWM
 
+config OC_STM32
+	default y
+	depends on OUTPUT_CMP
+
 config SPI_STM32
 	default y
 	depends on SPI

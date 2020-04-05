@@ -18,21 +18,44 @@
 	}
 
 OC_HANDLER(stop)
-OC_HANDLER(start)
-
 #include <syscalls/output_cmp_stop_mrsh.c>
+
+static inline int z_vrfy_output_cmp_start(struct device *dev,
+					  const struct counter_cfg * ovf_cfg)
+{
+	struct counter_cfg cfg_copy;
+
+	Z_OOPS(Z_SYSCALL_DRIVER_OUTPUT_CMP(dev, start));
+	Z_OOPS(z_user_from_copy(&cfg_copy, ovf_cfg, sizeof(cfg_copy)));
+	Z_OOPS(Z_SYSCALL_VERIFY_MSG(cfg_copy.ovf_match_callback == 0,
+				    "callbacks may not be set from user mode"));
+	return z_impl_output_cmp_start((struct device *)dev, cfg_copy);
+}
 #include <syscalls/output_cmp_start_mrsh.c>
 
-static inline int z_vrfy_precise_timer_set_ovf(struct device *dev,
-					       const struct ovf_cfg *cfg)
+static inline int z_vrfy_output_cmp_set_compare(struct device *dev,
+						u8_t channel,
+						const struct counter_cfg *cfg)
 {
-	struct ovf_cfg cfg_copy;
+	struct counter_cfg cfg_copy;
 
-	Z_OOPS(Z_SYSCALL_DRIVER_OUTPUT_CMP(dev, set_ovf));
+	Z_OOPS(Z_SYSCALL_DRIVER_OUTPUT_CMP(dev, set_compare));
 	Z_OOPS(z_user_from_copy(&cfg_copy, cfg, sizeof(cfg_copy)));
-	Z_OOPS(Z_SYSCALL_VERIFY_MSG(cfg_copy.callback == 0,
+	Z_OOPS(Z_SYSCALL_VERIFY_MSG(cfg_copy.ovf_match_callback == 0,
 				    "callbacks may not be set from user mode"));
-	return z_impl_output_cmp_set_ovf((struct device *)dev, cfg_copy);
+	return z_impl_output_cmp_set_compare((struct device *)dev, channel,
+					     cfg_copy);
 
 }
-#include <syscalls/output_cmp_set_ovf_mrsh.c>
+#include <syscalls/output_cmp_set_compare_mrsh.c>
+
+static inline int z_vrfy_output_cmp_update_compare(struct device *dev,
+						   u8_t channel,
+						   u32_t match)
+{
+	Z_OOPS(Z_SYSCALL_DRIVER_OUTPUT_CMP(dev, update_compare));
+	return z_impl_output_cmp_update_compare((struct device *)dev, channel,
+						match);
+
+}
+#include <syscalls/output_cmp_update_compare_mrsh.c>

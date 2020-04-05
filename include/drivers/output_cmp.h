@@ -31,38 +31,44 @@ extern "C" {
 #endif
 
 
-typedef void (*ovf_callback_t)(struct device *dev,
-			       u32_t ticks,
-			       void *user_data);
+typedef void (*ovf_match_callback_t)(struct device *dev,
+			       	     u32_t ticks,
+			       	     void *user_data);
 
 
-struct ovf_cfg {
-	ovf_callback_t callback;
-	uint16_t max_val;
+struct counter_cfg {
+	ovf_match_callback_t ovf_match_callback;
+	u32_t counter_val;
 	void *user_data;
 };
 
 
-typedef int (*oc_api_start)(struct device *dev);
+typedef int (*oc_api_start)(struct device *dev,
+			    const struct counter_cfg * ovf_cfg);
 typedef int (*oc_api_stop)(struct device *dev);
-typedef int (*oc_api_set_ovf)(struct device *dev,
-				const struct ovf_cfg *alarm_cfg);
+typedef int (*oc_api_set_compare)(struct device *dev, u8_t channel,
+				  const struct counter_cfg *match_cfg);
+typedef int (*oc_api_update_compare)(struct device *dev, u8_t channel,
+				     u32_t match);
 
 __subsystem struct output_cmp_driver_api {
 	oc_api_start start;
 	oc_api_stop stop;
-	oc_api_set_ovf set_ovf;
+	oc_api_set_compare set_cmp;
+	oc_api_update_compare update_cmp;
 };
 
 
-__syscall int output_cmp_start(struct device *dev);
+__syscall int output_cmp_start(struct device *dev,
+			       const struct counter_cfg * ovf_cfg);
 
-static inline int z_impl_output_cmp_start(struct device *dev)
+static inline int z_impl_output_cmp_start(struct device *dev,
+					  const struct counter_cfg * ovf_cfg)
 {
 	const struct output_cmp_driver_api *api =
 			(struct output_cmp_driver_api *)dev->driver_api;
 
-	return api->start(dev);
+	return api->start(dev, ovf_cfg);
 }
 
 __syscall int output_cmp_stop(struct device *dev);
@@ -75,18 +81,32 @@ static inline int z_impl_output_cmp_stop(struct device *dev)
 	return api->stop(dev);
 }
 
-__syscall int output_cmp_set_ovf(struct device *dev,
-				    const struct ovf_cfg *cfg);
+__syscall int output_cmp_set_compare(struct device *dev, u8_t channel,
+				     const struct counter_cfg *match_cfg);
 
-static inline int z_impl_output_cmp_set_ovf(struct device *dev,
-					    const struct ovf_cfg *ovf_cfg)
+static inline int z_impl_output_cmp_set_compare(struct device *dev,
+	u8_t channel,
+	const struct counter_cfg *match_cfg)
 {
 	const struct output_cmp_driver_api *api =
 			(struct output_cmp_driver_api *)dev->driver_api;
 
-	return api->set_ovf(dev, ovf_cfg);
+	return api->set_cmp(dev, channel, match_cfg);
 }
 
+__syscall int output_cmp_update_compare(struct device *dev, u8_t channel,
+					u32_t match);
+
+static inline int z_impl_output_cmp_update_compare(struct device *dev,
+						   u8_t channel,
+						   u32_t match)
+{
+	const struct output_cmp_driver_api *api =
+			(struct output_cmp_driver_api *)dev->driver_api;
+
+	return api->update_cmp(dev, channel, match);
+
+}
 
 #ifdef __cplusplus
 }
@@ -95,6 +115,6 @@ static inline int z_impl_output_cmp_set_ovf(struct device *dev,
 /**
  * @}
  */
-#include <syscalls/precise_timer.h>
+#include <syscalls/output_cmp.h>
 
 #endif /* ZEPHYR_INCLUDE_DRIVERS_OUTPUT_CMP_H_ */
