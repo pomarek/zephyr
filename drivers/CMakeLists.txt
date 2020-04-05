@@ -40,6 +40,7 @@ add_subdirectory_if_kconfig(eeprom)
 add_subdirectory_if_kconfig(lora)
 add_subdirectory_if_kconfig(peci)
 
+
 add_subdirectory_ifdef(CONFIG_FLASH_HAS_DRIVER_ENABLED flash)
 add_subdirectory_ifdef(CONFIG_SERIAL_HAS_DRIVER serial)
 add_subdirectory_ifdef(CONFIG_BT               bluetooth)
@@ -49,3 +50,4 @@ add_subdirectory_ifdef(CONFIG_ENTROPY_HAS_DRIVER entropy)
 add_subdirectory_ifdef(CONFIG_SYS_CLOCK_EXISTS timer)
 add_subdirectory_ifdef(CONFIG_NEURAL_NET_ACCEL neural_net)
 add_subdirectory_ifdef(CONFIG_PTP_CLOCK        ptp_clock)
+add_subdirectory_ifdef(CONFIG_OUTPUT_CMP       ocmp)

@@ -1,0 +1,13 @@
+# STM32 Output compare
+
+# Copyright (c) 2020, Marek Porwisz
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig USE_STM32_LL_TIM
+	bool "STM32 precise timer driver"
+	depends on SOC_FAMILY_STM32
+	help
+	  Build timers output compare driver for STM32 SoCs. Tested on STM32 F1 series.
+
+
+

@@ -1,0 +1,18 @@
+# oytput compare configuration options
+
+# Copyright (c) 2020 Marek Porwisz
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig OUTPUT_CMP
+	bool "Timer output compare api"
+	help
+	  Enable support for timers outpyt compare.
+
+if OUTPUT_CMP
+
+module = OUTPUT_CMP
+module-str = timer_oc
+source "drivers/ocmp/Kconfig.oc_stm32"
+source "subsys/logging/Kconfig.template.log_config"
+
+endif # OUTPUT_CMP

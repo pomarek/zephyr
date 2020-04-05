@@ -1,0 +1,13 @@
+# Copyright (c) 2020, Marek Porwisz
+# SPDX-License-Identifier: Apache-2.0
+
+# Common fields for OC controllers
+
+properties:
+    label:
+      required: true
+
+    "#oc-cells":
+      type: int
+      required: true
+      description: Number of items to expect in a oc specifier
