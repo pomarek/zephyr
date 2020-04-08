@@ -8,6 +8,10 @@ properties:
     label:
       required: true
 
+    timer:
+      type: phandle
+      required: true 
+
     st,prescaler:
       type: int
       required: true
