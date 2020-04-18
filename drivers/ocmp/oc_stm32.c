@@ -140,26 +140,8 @@ static int oc_stm32_set_compare(struct device *dev, u8_t channel,
 		return -ENOTSUP;
 	}
 
-	switch (channel) {
-	case 0:
-		LL_TIM_OC_EnablePreload(TIM_STRUCT(dev), LL_TIM_CHANNEL_CH1);
-		TIM_STRUCT(dev)->CCR1 = match_cfg->counter_val;
-		break;
-	case 1:
-		LL_TIM_OC_EnablePreload(TIM_STRUCT(dev), LL_TIM_CHANNEL_CH2);
-		TIM_STRUCT(dev)->CCR2 = match_cfg->counter_val;
-		break;
-	case 2:
-		LL_TIM_OC_EnablePreload(TIM_STRUCT(dev), LL_TIM_CHANNEL_CH3);
-		TIM_STRUCT(dev)->CCR3 = match_cfg->counter_val;
-		break;
-	case 3:
-		LL_TIM_OC_EnablePreload(TIM_STRUCT(dev), LL_TIM_CHANNEL_CH4);
-		TIM_STRUCT(dev)->CCR4 = match_cfg->counter_val;
-		break;
-	default:
-		return -EINVAL;
-	}
+	__HAL_TIM_ENABLE_OCxPRELOAD(&data->tim_handle, num_to_channel(channel));
+	__HAL_TIM_SET_COMPARE(&data->tim_handle, num_to_channel(channel), match_cfg->counter_val);
 
 	data->compare_unit[channel].ovf_match_callback = match_cfg->ovf_match_callback;
 	data->compare_unit[channel].user_data = match_cfg->user_data;
@@ -181,22 +163,7 @@ static int oc_stm32_update_compare(struct device *dev, u8_t channel,
 		return -EINVAL;
 	}
 
-	switch (channel) {
-	case 0:
-		TIM_STRUCT(dev)->CCR1 = match;
-		break;
-	case 1:
-		TIM_STRUCT(dev)->CCR2 = match;
-		break;
-	case 2:
-		TIM_STRUCT(dev)->CCR3 = match;
-		break;
-	case 3:
-		TIM_STRUCT(dev)->CCR4 = match;
-		break;
-	default:
-		return -EINVAL;
-	}
+	__HAL_TIM_SET_COMPARE(&data->tim_handle, num_to_channel(channel), match);
 
 	return 0;
 }
